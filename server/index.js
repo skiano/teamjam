@@ -5,11 +5,21 @@ const EventEmitter = require('eventemitter3')
 
 const app = express()
 
-/**********************************/
-/* CREATE EVENT EMITTER FOR STATE */
-/**********************************/
+/*********************/
+/* CREATE STATE MGMT */
+/*********************/
 
 const EE = new EventEmitter()
+const EVENTS = []
+EE.on('solve', (e) => EVENTS.push(e))
+
+/*****************************************/
+/* SEND COMPLETE EVENT RECORD TO CLIENTS */
+/*****************************************/
+
+app.get('/events', (req, res) => {
+  res.json(EVENTS)
+})
 
 /***************************/
 /* SEND UPDATES TO CLIENTS */
@@ -50,6 +60,8 @@ app.get('/notification', (req, res) => {
 /********************/
 
 app.get('/submit', bodyParser.json(), (req, res) => {
+  // take the { code, file } and pass to test runner
+
   EE.emit('solve', {
     time: Date.now(),
     team: 'Team Name',
@@ -66,17 +78,10 @@ app.get('/submit', bodyParser.json(), (req, res) => {
 /* EXPOSE PROBLEMS FOR DOWNLOAD */
 /********************************/
 
+const problemSet = require('../example/__data__.json')
+
 app.get('/problems', (req, res) => {
-  res.json({
-    problems: [
-      {
-        name: 'test-one.js',
-        stub: 'function () {}',
-        test: 'sdfsdfsdf () {}',
-        hint: 'function () {}',
-      }
-    ]
-  })
+  res.json(problemSet)
 })
 
 /********************/
