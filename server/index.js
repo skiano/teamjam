@@ -5,6 +5,7 @@ const EventEmitter = require('eventemitter3')
 const { runTest } = require('../test')
 
 const app = express()
+const problemSet = require('../example/__data__.json')
 
 /*********************/
 /* CREATE STATE MGMT */
@@ -62,7 +63,11 @@ app.get('/notification', (req, res) => {
 
 app.post('/submit', bodyParser.json(), async (req, res, next) => {
   try {
-    const result = await runTest(req.body.test)
+    const problem = problemSet.problems.find(p => p.id === req.body.id)
+
+    if (!problem) throw new Error(`could not find problem: '${req.body.id}'`)
+
+    const result = await runTest({ file: problem.id, code: problem.code }, req.body.test)
 
     if (result.status === 'passed') {
       EE.emit('solve', {
@@ -82,8 +87,6 @@ app.post('/submit', bodyParser.json(), async (req, res, next) => {
 /********************************/
 /* EXPOSE PROBLEMS FOR DOWNLOAD */
 /********************************/
-
-const problemSet = require('../example/__data__.json')
 
 app.get('/problems', (req, res) => {
   res.json(problemSet)

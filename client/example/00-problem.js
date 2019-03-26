@@ -3,7 +3,7 @@ PROBLEM 1: Return 2
 */
 
 exports.solution = () => {
-  return 3;
+  return 2;
 };
 
 exports.test = (f) => {

@@ -11,10 +11,10 @@ const workers = workerFarm({
 const runTest = util.promisify(workers)
 const readFile = util.promisify(fs.readFile)
 
-exports.runTest = async function(test) {
+exports.runTest = async function(test, solution) {
   // test looks like { code, file }
   try {
-    const result = await runTest(test)
+    const result = await runTest(test, solution)
     return result
   } catch (e) {
     if (e.type === 'TimeoutError') {
