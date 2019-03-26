@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const util = require('util')
 const workerFarm = require('worker-farm')
 
@@ -22,6 +23,7 @@ exports.runTest = async function(test, solution) {
     }
 
     return {
+      id: path.basename(test.file),
       status: 'failed',
       error: e.stack,
     }
