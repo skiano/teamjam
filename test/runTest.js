@@ -1,4 +1,6 @@
+const path = require('path')
 const chalk = require('chalk')
+const assert = require('assert')
 const StackUtils = require('stack-utils')
 const { NodeVM } = require('vm2')
 const { format } = require('assertion-error-formatter')
@@ -35,8 +37,17 @@ const vm = new NodeVM({
 module.exports = async function runTest(test, callback) {
   try {
     let t = vm.run(test.code, test.file)
+    const id = path.basename(test.file)
+
+    assert.strictEqual(typeof t.points, 'number', `${id} must export points`)
+    assert.strictEqual(typeof t.test, 'function', `${id} must export points`)
+    assert.strictEqual(typeof t.solution, 'function', `${id} must export points`)
+
     await t.test(t.solution)
     callback(null, {
+      id: id,
+      file: test.file,
+      code: test.code,
       points: t.points,
       status: 'passed',
     })
@@ -44,6 +55,7 @@ module.exports = async function runTest(test, callback) {
     e.stack = stack.clean(e.stack)
 
     callback(null, {
+      file: test.file,
       status: 'failed',
       error: format(e, {
         colorFns: {

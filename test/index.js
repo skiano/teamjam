@@ -3,7 +3,6 @@ const util = require('util')
 const workerFarm = require('worker-farm')
 
 const workers = workerFarm({
-  autoStart: true,
   maxRetries: 0,
   maxCallTime: 5000,
   maxConcurrentCallsPerWorker: 1,
@@ -12,7 +11,7 @@ const workers = workerFarm({
 const runTest = util.promisify(workers)
 const readFile = util.promisify(fs.readFile)
 
-const safeRun = async (test) => {
+exports.runTest = async function(test) {
   try {
     const result = await runTest(test)
     return result
@@ -20,7 +19,6 @@ const safeRun = async (test) => {
     if (e.type === 'TimeoutError') {
       e = new Error('failed to execute test in under 5 seconds')
     }
-
     return {
       status: 'failed',
       error: e.stack,
@@ -28,21 +26,25 @@ const safeRun = async (test) => {
   }
 }
 
-const runTestFromFile = async (file) => {
+exports.runTestFromFile = async function(file) {
   const code = await readFile(file)
-  return safeRun({ code: code.toString(), file })
+  return exports.runTest({ code: code.toString(), file })
 }
 
-const main = async () => {
-  const result = await runTestFromFile(require.resolve('../example/00-problem'))
-
-  if (result.error) {
-    console.log(result.error)
-  } else {
-    console.log(`earned ${result.points}!`)
-  }
-
+exports.shutdown = function() {
   workerFarm.end(workers)
 }
 
-main()
+// const main = async () => {
+//   const result = await exports.runTestFromFile(require.resolve('../example/00-problem'))
+//
+//   if (result.error) {
+//     console.log(result.error)
+//   } else {
+//     console.log(`earned ${result.points}!`)
+//   }
+//
+//   exports.shutdown()
+// }
+//
+// main()
