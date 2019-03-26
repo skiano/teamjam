@@ -35,10 +35,11 @@ const vm = new NodeVM({
 });
 
 module.exports = async function runTest(test, solution, callback) {
+  const id = path.basename(test.file)
+
   try {
     const t = vm.run(test.code, test.file)
     const s = solution && vm.run(solution.code, solution.file)
-    const id = path.basename(test.file)
 
     assert.strictEqual(typeof t.points, 'number', `${id} must export points`)
     assert.strictEqual(typeof t.test, 'function', `${id} must export test`)
@@ -48,7 +49,7 @@ module.exports = async function runTest(test, solution, callback) {
       assert.strictEqual(typeof s.solution, 'function', `${path.basename(solution.file)} must export solution`)
     }
 
-    await t.test(t.solution)
+    await t.test(solution ? s.solution : t.solution)
 
     callback(null, {
       id: id,
@@ -61,7 +62,7 @@ module.exports = async function runTest(test, solution, callback) {
     e.stack = stack.clean(e.stack)
 
     callback(null, {
-      file: test.file,
+      id: id,
       status: 'failed',
       error: format(e, {
         colorFns: {

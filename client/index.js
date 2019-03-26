@@ -5,21 +5,33 @@ const fetch = require('node-fetch')
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
+const removeExports = (code, exportKey) => {
+  // example REGEX /(exports\.test[\s\S]*?)(exports|$)/
+  const regex = new RegExp(`(exports\\.${exportKey}[\\s\\S]*?)(exports|$)`, '');
+  const matches = code.match(regex)
+
+  return matches
+    ? code.replace(matches[1], '')
+    : code
+}
+
 const setup = async (dir) => {
   const res = await fetch('http://localhost:4040/problems')
   const { problems } = await res.json()
 
   await Promise.all(problems.map(async (p) => {
-    await writeFile(path.resolve(dir, p.id), p.code)
+    let code = removeExports(p.code, 'test')
+    code = removeExports(code, 'points')
+    await writeFile(path.resolve(dir, p.id), code)
   }))
 }
 
-const submitTest = async (test) => {
+const submitTest = async (test, team = 'anon') => {
   const res = await fetch('http://localhost:4040/submit', {
     method: 'POST',
     body: JSON.stringify({
       id: path.basename(test.file),
-      team: 'TEAM NAME',
+      team: team,
       test: test,
     }),
     headers: { 'Content-Type': 'application/json' },
@@ -44,7 +56,13 @@ const main = async () => {
   const dir = path.resolve(__dirname, 'example')
   // await setup(dir)
   const result = await submitTestFromFile(path.resolve(dir, '00-problem.js'))
-  console.log('result', result)
+
+  if (result.status === 'passed') {
+    console.log(`earned ${result.points}!`)
+  } else {
+    console.log(`failed ${result.id}`)
+    console.log(result.error)
+  }
 }
 
 main()
