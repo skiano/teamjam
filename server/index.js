@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const EventEmitter = require('eventemitter3')
+const { runTest } = require('../test')
 
 const app = express()
 
@@ -59,19 +60,23 @@ app.get('/notification', (req, res) => {
 /* ACCEPT SOLUTIONS */
 /********************/
 
-app.get('/submit', bodyParser.json(), (req, res) => {
-  // take the { code, file } and pass to test runner
+app.post('/submit', bodyParser.json(), async (req, res, next) => {
+  try {
+    const result = await runTest(req.body.test)
 
-  EE.emit('solve', {
-    time: Date.now(),
-    team: 'Team Name',
-    problem: 3,
-    solution: 'function() {}',
-  })
+    if (result.status === 'passed') {
+      EE.emit('solve', {
+        time: Date.now(),
+        team: req.body.team,
+        problem: req.body.id,
+        solution: req.body.test.code,
+      })
+    }
 
-  res.json({
-    status: 'ok',
-  })
+    res.json(result)
+  } catch (err) {
+    next(err)
+  }
 })
 
 /********************************/

@@ -12,6 +12,7 @@ const runTest = util.promisify(workers)
 const readFile = util.promisify(fs.readFile)
 
 exports.runTest = async function(test) {
+  // test looks like { code, file }
   try {
     const result = await runTest(test)
     return result
@@ -19,6 +20,7 @@ exports.runTest = async function(test) {
     if (e.type === 'TimeoutError') {
       e = new Error('failed to execute test in under 5 seconds')
     }
+
     return {
       status: 'failed',
       error: e.stack,
@@ -34,17 +36,3 @@ exports.runTestFromFile = async function(file) {
 exports.shutdown = function() {
   workerFarm.end(workers)
 }
-
-// const main = async () => {
-//   const result = await exports.runTestFromFile(require.resolve('../example/00-problem'))
-//
-//   if (result.error) {
-//     console.log(result.error)
-//   } else {
-//     console.log(`earned ${result.points}!`)
-//   }
-//
-//   exports.shutdown()
-// }
-//
-// main()
