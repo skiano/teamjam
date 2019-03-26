@@ -12,9 +12,9 @@ const workers = workerFarm({
 const runTest = util.promisify(workers)
 const readFile = util.promisify(fs.readFile)
 
-const safeRun = async (code) => {
+const safeRun = async (test) => {
   try {
-    const result = await runTest(code)
+    const result = await runTest(test)
     return result
   } catch (e) {
     if (e.type === 'TimeoutError') {
@@ -30,7 +30,7 @@ const safeRun = async (code) => {
 
 const runTestFromFile = async (file) => {
   const code = await readFile(file)
-  return safeRun(code.toString())
+  return safeRun({ code: code.toString(), file })
 }
 
 const main = async () => {

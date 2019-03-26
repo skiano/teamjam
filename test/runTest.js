@@ -4,7 +4,7 @@ const { NodeVM } = require('vm2')
 const { format } = require('assertion-error-formatter')
 
 const stack = new StackUtils({
-  cwd: process.cwd(),
+  cwd: '/',
   internals: StackUtils.nodeInternals().concat([
     /node_modules\/vm2/,
     /runTest\.js/,
@@ -32,9 +32,9 @@ const vm = new NodeVM({
   }
 });
 
-module.exports = async function runTest(code, callback) {
+module.exports = async function runTest(test, callback) {
   try {
-    let t = vm.run(code, '/test-path.js')
+    let t = vm.run(test.code, test.file)
     await t.test(t.solution)
     callback(null, {
       points: t.points,
