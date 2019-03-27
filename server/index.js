@@ -12,11 +12,6 @@ const { runTest } = require('../test')
 function createApp(problemSet) {
   const app = express()
 
-  app.use((req, res, next) => {
-    console.log(`> request [${req.method}] ${chalk.yellow(req.url)}`)
-    next()
-  })
-
   /*********************/
   /* CREATE STATE MGMT */
   /*********************/
@@ -86,6 +81,9 @@ function createApp(problemSet) {
           problem: req.body.id,
           solution: req.body.test.code,
         })
+        console.log(`> ${chalk.green('passed')} [${req.body.id}] ${req.body.team}`)
+      } else {
+        console.log(`> ${chalk.red('failed')} [${req.body.id}] ${req.body.team}`)
       }
 
       res.json(result)
