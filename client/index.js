@@ -5,6 +5,7 @@ const chalk = require('chalk')
 const fetch = require('node-fetch')
 const dedent = require('dedent');
 const chokidar = require('chokidar')
+const fileAccess = util.promisify(fs.access)
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
@@ -32,11 +33,12 @@ module.exports = async function createClient(options) {
 
   await Promise.all(problems.map(async (p) => {
     const file = path.resolve(options.root, p.id)
+    const header = `${p.title.trim()} - points: ${p.points}`
     const code = dedent(`
       /*
-      ${'-'.repeat(p.title.length)}
-      ${p.title.trim()}
-      ${'-'.repeat(p.title.length)}
+      ${'-'.repeat(header.length)}
+      ${header}
+      ${'-'.repeat(header.length)}
       ${p.description.trim()}
       */
 
@@ -45,7 +47,11 @@ module.exports = async function createClient(options) {
       }
     `)
 
-    await writeFile(file, code) // TODO: only if file exists
+    try {
+      await fileAccess(file)
+    } catch (_) {
+      await writeFile(file, code)
+    }
 
     TESTS[file] = {
       id: p.id,
@@ -62,7 +68,7 @@ module.exports = async function createClient(options) {
 
   console.log(`> watching problems in: ${chalk.yellow(path.relative(process.cwd(), options.root))}`)
 
-  watcher.on('change', async (f) => {
+  const submitFile = async (f) => {
     const buff = await readFile(f)
     const code = buff.toString()
 
@@ -115,5 +121,8 @@ module.exports = async function createClient(options) {
     })
 
     console.log(`  - total points ${chalk.yellow(points)}\n`)
-  })
+  }
+
+  watcher.on('add', submitFile)
+  watcher.on('change', submitFile)
 }
