@@ -23,18 +23,6 @@ new Vue({
             <el-card v-for="problem in status.problems" class="box-card">
               <div slot="header" class="clearfix">
                 <span>{{problem.title}}</span>
-                <el-select v-model="value" placeholder="Select">
-                  <el-option
-                    key="item.value"
-                    label="item.label"
-                    value="item.value">
-                  </el-option>
-                  <el-option
-                    key="item.value"
-                    label="item.label"
-                    value="item.value">
-                  </el-option>
-                </el-select>
               </div>
               <pre class="code-snippet">{{problem.solution}}</pre>
             </el-card>

@@ -61,7 +61,7 @@ const store = new Vuex.Store({
         }
 
         teams[team].problems[problem] = state.problems.find(p => p.id === problem) || {}
-        teams[team].problems[problem].solution = solution
+        teams[team].problems[problem].solution = solution.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
 
         return teams
       }, {})
