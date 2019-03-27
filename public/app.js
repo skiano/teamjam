@@ -7,19 +7,42 @@ store.dispatch('fetchProblems')
 new Vue({
   el: '#app',
   template: `
-    <div>
-      <ul>
-        <li v-for="(status, team) in teams">
-          <h3>{{ team }} - Score: {{status.score}}</h3>
-          <ul>
-            <li v-for="problem in status.problems">
-              {{ problem.title }}
-              <pre>{{problem.solution}}</pre>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
+  <el-container>
+    <el-header>
+      <el-menu :default-active="'1'" class="el-menu-demo" mode="horizontal" @select="() => {}">
+        <el-menu-item index="1">Teams</el-menu-item>
+      </el-menu>
+    </el-header>
+    <el-main>
+      <el-main>
+        <el-collapse>
+          <el-collapse-item  v-for="(status, team) in teams" :title="team" :name="team">
+            <template slot="title">
+              <h2>{{team}} <span>{{status.score}}</span></h2>
+            </template>
+            <el-card v-for="problem in status.problems" class="box-card">
+              <div slot="header" class="clearfix">
+                <span>{{problem.title}}</span>
+                <el-select v-model="value" placeholder="Select">
+                  <el-option
+                    key="item.value"
+                    label="item.label"
+                    value="item.value">
+                  </el-option>
+                  <el-option
+                    key="item.value"
+                    label="item.label"
+                    value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+              <pre class="code-snippet">{{problem.solution}}</pre>
+            </el-card>
+          </el-collapse-item>
+        </el-collapse>
+      </el-main>
+    </el-main>
+  </el-container>
   `,
   computed: {
     teams () {
