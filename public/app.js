@@ -7,11 +7,23 @@ store.dispatch('fetchProblems')
 new Vue({
   el: '#app',
   template: `
-    <pre>{{teams}}</pre>
+    <div>
+      <ul>
+        <li v-for="(status, team) in teams">
+          <h3>{{ team }} - Score: {{status.score}}</h3>
+          <ul>
+            <li v-for="(problem, problemID) in status.problems">
+              {{ problemID }}
+              <pre>{{problem.solution}}</pre>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
   `,
   computed: {
     teams () {
-	    return JSON.stringify(store.getters.teams, null, 2)
+	    return store.getters.teams
     }
   },
 })
