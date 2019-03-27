@@ -128,12 +128,12 @@ module.exports = async function createServer(options) {
 
   await new Promise((resolve) => {
     app.listen(PORT, () => {
-      console.log(`> Server listening on: ${PORT}`)
+      console.log(`> local at: http://localhost:${PORT}`)
       resolve()
     })
   })
 
   const url = await ngrok.connect(PORT);
 
-  console.log(`> Server public at: ${url}`)
+  console.log(`> public at: ${url}`)
 }

@@ -4,7 +4,7 @@ const path = require('path')
 const chalk = require('chalk')
 const readdir = util.promisify(fs.readdir)
 // const writeFile = util.promisify(fs.writeFile)
-const { runTestFromFile, shutdown } = require('./index')
+const { runTestFromFile } = require('./index')
 
 module.exports = async function writeTests(dir) {
   // const output = path.resolve(dir, '__data__.json')
@@ -42,7 +42,6 @@ module.exports = async function writeTests(dir) {
     process.exit(1)
   }
 
-  shutdown()
   // await writeFile(output, JSON.stringify(data, null, 2))
   return data
 }
