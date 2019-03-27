@@ -91,7 +91,7 @@ module.exports = async function createClient(options) {
     })
 
     if (res.status > 400) {
-      return console.error(chalk.red(`Failed to submit:\n${JSON.stringify(test, null, 2)}`))
+      return console.error(chalk.red(`Failed to submit: ${path.basename(f)}`))
     }
 
     TESTS[f].result = await res.json()

@@ -75,6 +75,8 @@ function createApp(problemSet) {
 
       const result = await runTest({ file: problem.id, code: problem.code }, req.body.test)
 
+      const points = problemSet.problems.find(p => p.id === req.body.id).points
+
       if (result.status === 'passed') {
         EE.emit('solve', {
           id: uuid(),
@@ -82,6 +84,7 @@ function createApp(problemSet) {
           team: req.body.team,
           problem: req.body.id,
           solution: req.body.test.code,
+          points: points,
         })
         console.log(`> ${chalk.green('passed')} [${req.body.id}] ${req.body.team}`)
       } else {

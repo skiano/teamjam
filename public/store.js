@@ -30,7 +30,7 @@ const store = new Vuex.Store({
       serverEvents = new EventSource('/notification');
 
       serverEvents.addEventListener('solve', function(e) {
-        context.commit('addEvents', [e.data])
+        context.commit('addEvents', [JSON.parse(e.data)])
       });
 
       serverEvents.onerror = function(err) {
@@ -63,8 +63,9 @@ const store = new Vuex.Store({
         }
 
         teams[team].score = teams[team].score + points
-        teams[team].problems[problem].solved = true
         teams[team].problems[problem].solution = solution
+        console.log('solution')
+        console.log(teams[team].problems[problem].solution = solution)
 
         return teams
       }, {})
@@ -73,6 +74,7 @@ const store = new Vuex.Store({
 })
 
 store.subscribe((mutation, state) => {
+  console.log('PROBLEM')
   console.log('TEAMS', store.getters.teams)
 })
 
