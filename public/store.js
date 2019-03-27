@@ -60,8 +60,6 @@ const store = new Vuex.Store({
         teams[team].problems[problem] = state.problems.find(p => p.id === problem) || {}
         teams[team].score = teams[team].score + points
         teams[team].problems[problem].solution = solution
-        console.log('solution')
-        console.log(teams[team].problems[problem].solution = solution)
 
         return teams
       }, {})
