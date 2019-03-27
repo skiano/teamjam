@@ -57,11 +57,7 @@ const store = new Vuex.Store({
         }
 
         teams[team].score = 0 // reset each time, so the score does not inflate
-
-        if (!teams[team].problems[problem]) {
-          teams[team].problems[problem] = {}
-        }
-
+        teams[team].problems[problem] = state.problems.find(p => p.id === problem) || {}
         teams[team].score = teams[team].score + points
         teams[team].problems[problem].solution = solution
         console.log('solution')

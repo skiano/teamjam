@@ -12,8 +12,8 @@ new Vue({
         <li v-for="(status, team) in teams">
           <h3>{{ team }} - Score: {{status.score}}</h3>
           <ul>
-            <li v-for="(problem, problemID) in status.problems">
-              {{ problemID }}
+            <li v-for="problem in status.problems">
+              {{ problem.title }}
               <pre>{{problem.solution}}</pre>
             </li>
           </ul>
