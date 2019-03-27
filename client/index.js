@@ -43,7 +43,9 @@ module.exports = async function createClient(options) {
     const file = path.resolve(options.root, p.id)
     let code = removeExports(p.code, 'test')
     code = removeExports(code, 'points')
-    await writeFile(file, code)
+
+    await writeFile(file, code) // TODO: only if file exists
+
     TESTS[file] = {
       id: p.id,
       code: code,
