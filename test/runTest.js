@@ -14,6 +14,10 @@ const stack = new StackUtils({
   ]),
 });
 
+// TODO:
+// run the tester code in a permissive sandbox
+// and run the player code in a tighter one
+// (also allow user to override the sandbox options)
 
 const vm = new NodeVM({
   console: 'inherit',
