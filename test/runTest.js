@@ -44,6 +44,8 @@ module.exports = async function runTest(test, solution, callback) {
     assert.strictEqual(typeof t.points, 'number', `${id} must export points`)
     assert.strictEqual(typeof t.test, 'function', `${id} must export test`)
     assert.strictEqual(typeof t.solution, 'function', `${id} must export solution`)
+    assert.strictEqual(typeof t.description, 'string', `${id} must export description`)
+    assert.strictEqual(typeof t.title, 'string', `${id} must export title`)
 
     if (solution) {
       assert.strictEqual(typeof s.solution, 'function', `${path.basename(solution.file)} must export solution`)
@@ -55,6 +57,8 @@ module.exports = async function runTest(test, solution, callback) {
       id: id,
       file: test.file,
       code: test.code,
+      title: t.title,
+      description: t.description,
       points: t.points,
       status: 'passed',
     })

@@ -3,19 +3,10 @@ const util = require('util')
 const path = require('path')
 const chalk = require('chalk')
 const fetch = require('node-fetch')
+const dedent = require('dedent');
 const chokidar = require('chokidar')
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
-
-const removeExports = (code, exportKey) => {
-  // example REGEX /(exports\.test[\s\S]*?)(exports|$)/
-  const regex = new RegExp(`(exports\\.${exportKey}[\\s\\S]*?)(exports|$)`, '');
-  const matches = code.match(regex)
-
-  return matches
-    ? code.replace(matches[1], '')
-    : code
-}
 
 module.exports = async function createClient(options) {
   if (!options.url) {
@@ -41,8 +32,18 @@ module.exports = async function createClient(options) {
 
   await Promise.all(problems.map(async (p) => {
     const file = path.resolve(options.root, p.id)
-    let code = removeExports(p.code, 'test')
-    code = removeExports(code, 'points')
+    const code = dedent(`
+      /*
+      ${'-'.repeat(p.title.length)}
+      ${p.title.trim()}
+      ${'-'.repeat(p.title.length)}
+      ${p.description.trim()}
+      */
+
+      exports.solution = () => {
+        // your solution here...
+      }
+    `)
 
     await writeFile(file, code) // TODO: only if file exists
 

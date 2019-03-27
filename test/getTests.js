@@ -24,11 +24,13 @@ module.exports = async function getTests(dir) {
       data.problems.push({
         id: r.id,
         code: r.code,
+        title: r.title,
+        description: r.description,
         points: r.points,
       })
     } else {
       hasFailure = true
-      console.log(chalk.red(`✘ ${path.basename(r.file)}`))
+      console.log(chalk.red(`✘ ${r.id}`))
       console.log('\n')
       console.log(r.error)
     }
