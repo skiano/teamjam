@@ -2,6 +2,7 @@ const fs = require('fs')
 const util = require('util')
 const path = require('path')
 const chalk = require('chalk')
+const dedent = require('dedent')
 const readdir = util.promisify(fs.readdir)
 const { runTestFromFile } = require('./index')
 
@@ -24,8 +25,8 @@ module.exports = async function getTests(dir) {
       data.problems.push({
         id: r.id,
         code: r.code,
-        title: r.title,
-        description: r.description,
+        title: r.title.trim(),
+        description: dedent(r.description.trim()),
         points: r.points,
       })
     } else {

@@ -1,0 +1,79 @@
+const fetchJSON = async (url) => {
+  const res = await fetch(url)
+  return res.json()
+}
+
+let serverEvents
+
+const store = new Vuex.Store({
+  state: {
+    events: [],
+    problems: [],
+  },
+  mutations: {
+    addEvents(state, payload) {
+      payload.forEach((evt) => {
+        const alreadyDigested = state.events.some(e => e.id === evt.id)
+        if (!alreadyDigested) {
+          state.events.push(evt)
+        }
+      })
+    },
+    addProblems(state, payload) {
+      payload.forEach((problem) => {
+        state.problems.push(problem)
+      })
+    }
+  },
+  actions: {
+    async subscribeToEvents(context) {
+      serverEvents = new EventSource('/notification');
+
+      serverEvents.addEventListener('solve', function(e) {
+        context.commit('addEvents', [e.data])
+      });
+
+      serverEvents.onerror = function(err) {
+        console.error(err)
+      }
+    },
+    async fetchEvents(context) {
+      const events = await fetchJSON('/events')
+      context.commit('addEvents', events)
+    },
+    async fetchProblems(context) {
+      const problemSet = await fetchJSON('/problems')
+      context.commit('addProblems', problemSet.problems)
+    },
+  },
+  getters: {
+    teams(state) {
+      console.log('state.events', state.events)
+      return state.events.reduce((teams, evt) => {
+        const { team, problem, solution, points } = evt
+
+        if (!teams[team]) {
+          teams[team] = { problems: {} }
+        }
+
+        teams[team].score = 0 // reset each time, so the score does not inflate
+
+        if (!teams[team].problems[problem]) {
+          teams[team].problems[problem] = {}
+        }
+
+        teams[team].score = teams[team].score + points
+        teams[team].problems[problem].solved = true
+        teams[team].problems[problem].solution = solution
+
+        return teams
+      }, {})
+    }
+  }
+})
+
+store.subscribe((mutation, state) => {
+  console.log('TEAMS', store.getters.teams)
+})
+
+export default store

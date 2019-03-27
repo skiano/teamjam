@@ -1,6 +1,7 @@
 const fs = require('fs')
 const util = require('util')
 const path = require('path')
+const uuid = require('uuid/v4')
 const chalk = require('chalk')
 const ngrok = require('ngrok')
 const express = require('express')
@@ -76,6 +77,7 @@ function createApp(problemSet) {
 
       if (result.status === 'passed') {
         EE.emit('solve', {
+          id: uuid(),
           time: Date.now(),
           team: req.body.team,
           problem: req.body.id,
