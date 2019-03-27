@@ -6,7 +6,7 @@ const ngrok = require('ngrok')
 const express = require('express')
 const bodyParser = require('body-parser')
 const EventEmitter = require('eventemitter3')
-const writeTest = require('../test/writeTests')
+const getTests = require('../test/getTests')
 const { runTest } = require('../test')
 
 function createApp(problemSet) {
@@ -123,7 +123,7 @@ module.exports = async function createServer(options) {
     throw new Error('--problems must specify an existing directory')
   }
 
-  const problems = await writeTest(DIRECTORY)
+  const problems = await getTests(DIRECTORY)
   const app = createApp(problems)
 
   await new Promise((resolve) => {
