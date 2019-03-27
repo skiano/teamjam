@@ -9,8 +9,10 @@ new Vue({
   template: `
   <el-container>
     <el-header>
-      <el-menu :default-active="'1'" class="el-menu-demo" mode="horizontal" @select="() => {}">
-        <el-menu-item index="1">Teams</el-menu-item>
+      <el-menu :default-active="'teams'" class="el-menu-demo" mode="horizontal" @select="() => {}">
+        <el-menu-item index="teams">Teams</el-menu-item>
+        <el-menu-item index="problems">Problems</el-menu-item>
+        <el-menu-item index="timeline">Timeline</el-menu-item>
       </el-menu>
     </el-header>
     <el-main>
