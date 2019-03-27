@@ -52,17 +52,21 @@ const submitTestFromFile = async (file) => {
   })
 }
 
-const main = async () => {
-  const dir = path.resolve(__dirname, 'example')
-  // await setup(dir)
-  const result = await submitTestFromFile(path.resolve(dir, '00-problem.js'))
+// const main = async () => {
+//   const dir = path.resolve(__dirname, 'example')
+//   // await setup(dir)
+//   const result = await submitTestFromFile(path.resolve(dir, '00-problem.js'))
+//
+//   if (result.status === 'passed') {
+//     console.log(`earned ${result.points}!`)
+//   } else {
+//     console.log(`failed ${result.id}`)
+//     console.log(result.error)
+//   }
+// }
+//
+// main()
 
-  if (result.status === 'passed') {
-    console.log(`earned ${result.points}!`)
-  } else {
-    console.log(`failed ${result.id}`)
-    console.log(result.error)
-  }
+module.exports = function createClient() {
+
 }
-
-main()

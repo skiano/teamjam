@@ -3,13 +3,13 @@ const util = require('util')
 const path = require('path')
 const chalk = require('chalk')
 const readdir = util.promisify(fs.readdir)
-const writeFile = util.promisify(fs.writeFile)
+// const writeFile = util.promisify(fs.writeFile)
 const { runTestFromFile, shutdown } = require('./index')
 
 module.exports = async function writeTests(dir) {
-  const output = path.resolve(dir, '__data__.json')
+  // const output = path.resolve(dir, '__data__.json')
 
-  console.log(`> building tests data: ${chalk.cyan(output)}`)
+  console.log(`> building tests data from: ${chalk.cyan(dir)}`)
 
   const data = {
     problems: [],
@@ -43,15 +43,6 @@ module.exports = async function writeTests(dir) {
   }
 
   shutdown()
-  await writeFile(output, JSON.stringify(data, null, 2))
+  // await writeFile(output, JSON.stringify(data, null, 2))
   return data
 }
-
-const main = async () => {
-  const path = require('path')
-  const example = path.resolve(__dirname, '..', 'example')
-  const output = path.resolve(example, '__data__.json')
-  const tests = await module.exports(example, output)
-}
-
-main()
