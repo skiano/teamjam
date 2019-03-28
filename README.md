@@ -1,11 +1,12 @@
 # teamjam
 
-Run a code challenge for a group of people with live results and no hassle.
+Run a live code challenge for a group of people.
 
 ## Goals
 
-* Create challenge problems with plain JS files.
+* Create challenge problems with JS files.
 * Allow people to organize themselves into teams.
+* Give problems point values so teams can strategize about which problems to tackle.
 * Allow teams to use one computer or many.
 * People can user their own text editor.
 * Display the progress of the teams live in a browser.
