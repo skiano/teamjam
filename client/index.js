@@ -80,7 +80,7 @@ module.exports = async function createClient(options) {
     if (TESTS[file].code.trim() === code.trim()) return // no change
     TESTS[file].code = code
 
-    console.log(`> submitting test: ${chalk.cyan(id}`)
+    console.log(`> submitting test: ${chalk.cyan(id)}`)
 
     const res = await fetch(`${options.url}/submit`, {
       method: 'POST',
