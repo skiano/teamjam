@@ -18,11 +18,12 @@ module.exports = async function createClient(options) {
     throw new Error('--team is required')
   }
 
-  const TESTS = {}
-
   options.root = options.root
     ? path.resolve(process.cwd(), options.root)
     : process.cwd()
+
+  // Keep track of the state of the player’s work
+  const TESTS = {}
 
   /********************/
   /* SETUP TEST FILES */
@@ -32,6 +33,7 @@ module.exports = async function createClient(options) {
   const { problems } = await res.json()
 
   await Promise.all(problems.map(async (p) => {
+    // create code for player to download
     const file = path.resolve(options.root, p.id)
     const header = `${p.title.trim()} - points: ${p.points}`
     const code = dedent(`
@@ -47,12 +49,14 @@ module.exports = async function createClient(options) {
       }
     `)
 
+    // do not overwrite their existing solution
     try {
       await fileAccess(file)
     } catch (_) {
       await writeFile(file, code)
     }
 
+    // store an initial state of the problem
     TESTS[file] = {
       id: p.id,
       code: code,
@@ -68,38 +72,39 @@ module.exports = async function createClient(options) {
 
   console.log(`> watching problems in: ${chalk.yellow(path.relative(process.cwd(), options.root))}`)
 
-  const submitFile = async (f) => {
-    const buff = await readFile(f)
+  const submitFile = async (file) => {
+    const id = path.basename(file)
+    const buff = await readFile(file)
     const code = buff.toString()
 
-    if (TESTS[f].code.trim() === code.trim()) return // no change
-    TESTS[f].code = code
+    if (TESTS[file].code.trim() === code.trim()) return // no change
+    TESTS[file].code = code
 
-    console.log(`> submitting test: ${chalk.cyan(path.basename(f))}`)
+    console.log(`> submitting test: ${chalk.cyan(id}`)
 
     const res = await fetch(`${options.url}/submit`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: path.basename(f),
+        id: id,
         team: options.team,
         test: {
           code: code,
-          file: f,
+          file: file,
         },
       }),
-      headers: { 'Content-Type': 'application/json' },
     })
 
     if (res.status > 400) {
-      return console.error(chalk.red(`Failed to submit: ${path.basename(f)}`))
+      return console.error(chalk.red(`Failed to submit: ${id}`))
     }
 
-    TESTS[f].result = await res.json()
+    TESTS[file].result = await res.json()
 
-    if (TESTS[f].result.status === 'failed') {
+    if (TESTS[file].result.status === 'failed') {
       console.log()
-      console.log(chalk.red(`FAILURE: ${TESTS[f].id}\n`))
-      console.log(TESTS[f].result.error)
+      console.log(chalk.red(`FAILURE: ${TESTS[file].id}\n`))
+      console.log(TESTS[file].result.error)
     }
 
     console.log(`\n> STATUS`)
