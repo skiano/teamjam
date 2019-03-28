@@ -59,6 +59,8 @@ $ npx teamjam serve --problems my-problems # your files live in my-problems/
 
 This will create an app that coordinates the challenge.
 
+_Please note: this app will only work in browsers that support esm and async/await and other modern APIs._
+
 ### 2. Ask people to join.
 
 Once the app is running on a URL, people can use the cli to join the fun:
