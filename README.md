@@ -1,6 +1,6 @@
 # teamjam
 
-Run a live code challenge for a group of people.
+Run a real-time code challenge for teams.
 
 ## Goals
 
