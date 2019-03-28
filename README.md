@@ -9,13 +9,13 @@ Run a code challenge for a group of people with live results and no hassle.
 * Allow teams to use one computer or many.
 * People can user their own text editor.
 * Display the progress of the teams live in a browser.
-* Cost nothing
+* Cost nothing.
 
 ## Usage
 
-### 1. Create problems to solve
+### 1. Create a challenge
 
-Create a directory of “problem” files that export the following **required** properties:
+Create a directory of “problem” files that each export the following **required** properties:
 
 - `title` - The display name of the problem
 - `points` - How many points competitors get for solving the problem
@@ -42,13 +42,32 @@ exports.test = (solve) => {
 
 _[Checkout more examples here »](https://github.com/skiano/teamjam/tree/master/example)_
 
-### 1. Host the 
+To develop your tests and verify they are valid, run:
 
-Then, you can host a public challenge like so:
+```bash
+$ npx teamjam dev --problems my-problems # your files live in my-problems/
+```
+
+### 1. Run the challenge
+
+Once you have a directory filled with problems, you can run the challenge like so:
 
 ```bash
 $ npx teamjam serve --problems my-problems # your files live in my-problems/
 ```
 
-Once, your app is running you can visit it's local public url to view the state of the challenge.
+This will create an app that coordinates the challenge.
 
+### 2. Ask people to join
+
+Once the app is running on a URL, people can use the cli to join the fun:
+
+```bash
+$ teamjam play --url="http://...url of the app" --team="MY TEAM"
+```
+
+_The app will also show instructions for joining, so you can just share the URL_
+
+### 3. Watch them play
+
+The app will live update as users solve problems and show how many points everyone has along with their solutions to problems.
