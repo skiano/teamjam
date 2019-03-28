@@ -14,7 +14,7 @@ Run a live code challenge for a group of people.
 
 ## Usage
 
-### 1. Create a challenge
+### 1. Create a challenge.
 
 Create a directory of “problem” files that each export the following **required** properties:
 
@@ -49,7 +49,7 @@ To develop your tests and verify they are valid, run:
 $ npx teamjam dev --problems my-problems # your files live in my-problems/
 ```
 
-### 1. Run the challenge
+### 1. Run the challenge.
 
 Once you have a directory filled with problems, you can run the challenge like so:
 
@@ -59,7 +59,7 @@ $ npx teamjam serve --problems my-problems # your files live in my-problems/
 
 This will create an app that coordinates the challenge.
 
-### 2. Ask people to join
+### 2. Ask people to join.
 
 Once the app is running on a URL, people can use the cli to join the fun:
 
@@ -69,6 +69,6 @@ $ teamjam play --url="http://...url of the app" --team="MY TEAM"
 
 _The app will also show instructions for joining, so you can just share the URL_
 
-### 3. Watch them play
+### 3. Watch them play.
 
 The app will live update as users solve problems and show how many points everyone has along with their solutions to problems.
