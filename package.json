@@ -1,13 +1,20 @@
 {
-  "name": "compete",
+  "name": "teamjam",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "author": "Greg Skiano",
+  "license": "MIT",
+  "description": "run a code challenge for a group with live results and no hassle",
+  "keywords": [
+    "codejam",
+    "collaborate",
+    "jam",
+    "challenge"
+  ],
+  "bin": {
+    "teamjam": "bin/teamjam.js"
   },
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+  },
   "dependencies": {
     "assertion-error-formatter": "2.0.1",
     "body-parser": "1.18.3",
