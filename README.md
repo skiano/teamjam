@@ -2,7 +2,14 @@
 
 run a code challenge for a group with live results and no hassle
 
-### Usage
+## Goals
+
+* Create tests with plain JS files
+* Allow multiple people to self organize into teams to compete
+* Serve an app that coordinates the competition and shows what is going on
+* It should cost nothing
+
+## Usage
 
 To host a challenge you create a directory of "problem" files that look like this:
 
