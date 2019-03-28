@@ -14,7 +14,7 @@ Run a real-time code challenge for teams.
 
 ## Usage
 
-### 1. Create a challenge.
+### 1. Create the challenge.
 
 Create a directory of “problem” files that each export the following **required** properties:
 
