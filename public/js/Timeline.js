@@ -7,7 +7,7 @@ export default {
       </li>
     </ul>
   `,
-  computed: Vuex.mapState({
-    events: 'events',
-  })
+  computed: {
+    ...Vuex.mapState(['events'])
+  }
 }

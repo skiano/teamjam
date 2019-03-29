@@ -16,8 +16,6 @@ export default {
   </el-collapse>
   `,
   computed: {
-    teams () {
-	    return this.$store.getters.teams
-    }
+    ...Vuex.mapGetters(['teams'])
   },
 }

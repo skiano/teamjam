@@ -8,7 +8,7 @@ export default {
       </li>
     </ul>
   `,
-  computed: Vuex.mapState({
-    problems: 'problems',
-  })
+  computed: {
+    ...Vuex.mapState(['problems'])
+  }
 }
