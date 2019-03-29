@@ -48,9 +48,9 @@ const store = new Vuex.Store({
   },
   getters: {
     teams(state) {
-      console.log('state.events', state.events)
       return state.events.reduce((teams, evt) => {
         const { team, problem, solution, points } = evt
+        const { title, description } = state.problems.find(p => p.id === problem) || {}
 
         if (!teams[team]) {
           teams[team] = { problems: {}, score: 0 }
@@ -60,8 +60,12 @@ const store = new Vuex.Store({
           teams[team].score = teams[team].score + points
         }
 
-        teams[team].problems[problem] = state.problems.find(p => p.id === problem) || {}
-        teams[team].problems[problem].solution = solution.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
+        teams[team].problems[problem] = {
+          id: problem,
+          title: title,
+          description: description,
+          solution: solution.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
+        }
 
         return teams
       }, {})
@@ -69,9 +73,9 @@ const store = new Vuex.Store({
   }
 })
 
-store.subscribe((mutation, state) => {
-  console.log('PROBLEM')
-  console.log('TEAMS', store.getters.teams)
-})
+// store.subscribe((mutation, state) => {
+//   console.log('PROBLEMS', state.problems)
+//   console.log('TEAMS', store.getters.teams)
+// })
 
 export default store
