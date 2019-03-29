@@ -48,33 +48,43 @@ const store = new Vuex.Store({
   },
   getters: {
     sortedEvents(state) {
-      return state.events.map(e => {
+      const solves = {}
+
+      return state.events.sort((a, b) => b.time - a.time).map((e) => {
+        const solveKey = `${e.team}-${e.problem}`
+        const alreadySolved = !!solves[solveKey]
+        solves[solveKey] = true
+
         return {
           ...e,
-          ...state.problems.find(p => p.id === e.problem),
-          // TODO: detect a resolve for better timeline
+          problem: state.problems.find(p => p.id === e.problem),
+          alreadySolved
         }
-      }).sort((a, b) => b.time - a.time)
+      })
     },
-    teams(state) {
-      return state.events.reduce((teams, evt) => {
-        const { team, problem, solution, points } = evt
-        const { title, description } = state.problems.find(p => p.id === problem) || {}
+    teams(state, getters) {
+      let i = 0
+      return getters.sortedEvents.reduce((teams, evt) => {
+        const { team, problem, solution, points, alreadySolved } = evt
+        const { id, title, description } = evt.problem
 
         if (!teams[team]) {
           teams[team] = { problems: {}, score: 0 }
         }
 
-        if (!teams[team].problem) {
+        if (!evt.alreadySolved) {
           teams[team].score = teams[team].score + points
+          teams[team].problems[id] = {
+            id: id,
+            title: title,
+            description: description,
+            solutions: [],
+          }
         }
 
-        teams[team].problems[problem] = {
-          id: problem,
-          title: title,
-          description: description,
-          solution: solution.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
-        }
+        const s = solution.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
+
+        teams[team].problems[id].solutions.unshift(s)
 
         return teams
       }, {})

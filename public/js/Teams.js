@@ -10,7 +10,7 @@ export default {
         <div slot="header" class="clearfix">
           <span>{{problem.title}}</span>
         </div>
-        <pre class="code-snippet">{{problem.solution}}</pre>
+        <pre class="code-snippet">{{problem.solutions[0]}}</pre>
       </el-card>
     </el-collapse-item>
   </el-collapse>

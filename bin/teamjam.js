@@ -7,6 +7,7 @@ const argv = require('minimist')(process.argv.slice(2), {
     'url': 'u',
     'team': 't',
     'problems': 'p',
+    'root': 'r',
   }
 })
 
