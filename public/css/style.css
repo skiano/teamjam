@@ -2,6 +2,16 @@ html {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB","Microsoft YaHei","微软雅黑", Arial, sans-serif;
 }
 
+.header__link {
+  display: inline-block;
+  color: #333;
+  padding: 10px;
+}
+
+.header__link.router-link-exact-active {
+  color: red;
+}
+
 .code-snippet {
   font-family: monospace;
   padding: 15px;
