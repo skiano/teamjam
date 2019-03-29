@@ -12,10 +12,78 @@ html {
   color: red;
 }
 
+.problem {
+  margin-bottom: 35px;
+}
+
+.problem__title {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.problem__points {
+  color: limegreen;
+  font-weight: normal;
+}
+
+.problem__description {
+  color: #444;
+}
+
+/***************/
+/* TEAM STYLES */
+/***************/
+
 .code-snippet {
   font-family: monospace;
   padding: 15px;
   color: #333;
   background: #f6f6f6;
   border-radius: 8px;
+}
+
+/*******************/
+/* TIMELINE STYLES */
+/*******************/
+
+.event {
+  position: relative;
+  padding: 15px 20px;
+  max-width: 500px;
+  color: #555;
+}
+
+.event::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  bottom: 0;
+  top: 0;
+  width: 2px;
+  background: limegreen;
+}
+
+.event:first-child::before {
+  top: 50%;
+}
+
+.event:last-child::before {
+  bottom: 50%;
+}
+
+.event::after {
+  content: '';
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 8px;
+  width: 8px;
+  background: #fff;
+  border: 2px solid limegreen;
+  border-radius: 50%;
+}
+
+.event:first-child::after {
+  background: limegreen;
 }

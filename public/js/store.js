@@ -47,6 +47,15 @@ const store = new Vuex.Store({
     },
   },
   getters: {
+    sortedEvents(state) {
+      return state.events.map(e => {
+        return {
+          ...e,
+          ...state.problems.find(p => p.id === e.problem),
+          // TODO: detect a resolve for better timeline
+        }
+      }).sort((a, b) => b.time - a.time)
+    },
     teams(state) {
       return state.events.reduce((teams, evt) => {
         const { team, problem, solution, points } = evt

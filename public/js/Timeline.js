@@ -1,13 +1,17 @@
 export default {
   name: 'timeline',
   template: `
-    <ul>
-      <li v-for="event in events" :key="event.id">
-        {{event.team}} solved {{event.problem}}
+    <ul class="timeline">
+      <li class="event" v-for="event in sortedEvents" :key="event.id">
+        <p class="event__message">
+          <span class="event__timestamp">{{event.time}}</span>
+          {{event.team}} solved {{event.problem}}
+          +{{event.points}} points
+        </p>
       </li>
     </ul>
   `,
   computed: {
-    ...Vuex.mapState(['events'])
+    ...Vuex.mapGetters(['sortedEvents'])
   }
 }
