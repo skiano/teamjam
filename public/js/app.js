@@ -43,8 +43,8 @@ new Vue({
   //   </el-container>
   // `,
   template: `
-    <el-container v-if="currentRoute">
-      <el-header>
+    <div class="layout" v-if="currentRoute">
+      <header class="layout__header">
         <router-link
           class="header__link"
           v-for="route in routes"
@@ -52,11 +52,11 @@ new Vue({
           :to="route.path">
           {{route.name}}
         </router-link>
-      </el-header>
-      <el-main>
+      </header>
+      <main class="layout__main">
         <router-view></router-view>
-      </el-main>
-    </el-container>
+      </main>
+    </div>
   `,
   data: () => ({
     routes: routes,

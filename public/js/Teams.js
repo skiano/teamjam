@@ -1,19 +1,20 @@
 export default {
   name: 'teams',
   template: `
-  <el-collapse>
-    <el-collapse-item  v-for="(status, team) in teams" :key="team" :title="team" :name="team">
-      <template slot="title">
-        <h2>{{team}} <span>{{status.score}}</span></h2>
-      </template>
-      <el-card v-for="problem in status.problems" :key="problem.id" class="box-card">
-        <div slot="header" class="clearfix">
-          <span>{{problem.title}}</span>
-        </div>
-        <pre class="code-snippet">{{problem.solutions[0]}}</pre>
-      </el-card>
-    </el-collapse-item>
-  </el-collapse>
+  <ul class="team-list">
+    <li class="team" v-for="(team, i) in teams" :key="i">
+      <h2 class="team__name">{{team.name}} <span>{{team.score}}</span></h2>
+      <ul class="solution-list" v-for="problem in team.problems" :key="problem.id">
+        <li class="solution">
+          <h3 class="solution__title">{{problem.title}}</h3>
+          <pre
+            class="solution__code"
+            v-for="(solution, i) in problem.solutions"
+            :key="i">{{solution}}</pre>
+        </li>
+      </ul>
+    </li>
+  </ul>
   `,
   computed: {
     ...Vuex.mapGetters(['teams'])

@@ -50,7 +50,7 @@ const store = new Vuex.Store({
     sortedEvents(state) {
       const solves = {}
 
-      return state.events.sort((a, b) => b.time - a.time).map((e) => {
+      return state.events.sort((a, b) => a.time - b.time).map((e) => {
         const solveKey = `${e.team}-${e.problem}`
         const alreadySolved = !!solves[solveKey]
         solves[solveKey] = true
@@ -62,14 +62,16 @@ const store = new Vuex.Store({
         }
       })
     },
+    reversedEvents(state, getters) {
+      return [...getters.sortedEvents].reverse()
+    },
     teams(state, getters) {
-      let i = 0
-      return getters.sortedEvents.reduce((teams, evt) => {
+      const teamMap = getters.sortedEvents.reduce((teams, evt) => {
         const { team, problem, solution, points, alreadySolved } = evt
         const { id, title, description } = evt.problem
 
         if (!teams[team]) {
-          teams[team] = { problems: {}, score: 0 }
+          teams[team] = { name: team, problems: {}, score: 0 }
         }
 
         if (!evt.alreadySolved) {
@@ -88,6 +90,8 @@ const store = new Vuex.Store({
 
         return teams
       }, {})
+
+      return Object.values(teamMap).sort((a, b) => b.name < a.name ? 1 : -1)
     }
   }
 })

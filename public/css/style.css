@@ -2,6 +2,17 @@ html {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB","Microsoft YaHei","微软雅黑", Arial, sans-serif;
 }
 
+.layout__header {
+  padding: 12px 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.layout__main {
+  padding: 40px 15px 100px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .header__link {
   display: inline-block;
   color: #333;
@@ -34,12 +45,35 @@ html {
 /* TEAM STYLES */
 /***************/
 
-.code-snippet {
+.team {
+  margin-bottom: 30px;
+}
+
+.team__name {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.solution {
+  margin: 20px 20px;
+  border-left: 1px solid #ccc;
+  padding-left: 15px;
+}
+
+.solution__title {
+  margin-bottom: 15px;
+}
+
+.solution__code {
   font-family: monospace;
   padding: 15px;
   color: #333;
   background: #f6f6f6;
   border-radius: 8px;
+}
+
+.solution__code + .solution__code {
+  margin-top: 15px;
 }
 
 /*******************/
