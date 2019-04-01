@@ -84,9 +84,7 @@ const store = new Vuex.Store({
           }
         }
 
-        const s = solution.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
-
-        teams[team].problems[id].solutions.unshift(s)
+        teams[team].problems[id].solutions.unshift(solution)
 
         return teams
       }, {})

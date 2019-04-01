@@ -10,7 +10,7 @@ export default {
           <pre
             class="solution__code"
             v-for="(solution, i) in problem.solutions"
-            :key="i">{{solution}}</pre>
+            :key="i"><code class="language-javascript" v-html="solution"></code></pre>
         </li>
       </ul>
     </li>
