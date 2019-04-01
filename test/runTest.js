@@ -19,6 +19,10 @@ const stack = new StackUtils({
 // and run the player code in a tighter one
 // (also allow user to override the sandbox options)
 
+// TODO:
+// redirect all console output and send it back
+// for replay on client machine
+
 const vm = new NodeVM({
   console: 'inherit',
   sandbox: {},
