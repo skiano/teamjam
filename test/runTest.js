@@ -19,12 +19,8 @@ const stack = new StackUtils({
 // and run the player code in a tighter one
 // (also allow user to override the sandbox options)
 
-// TODO:
-// redirect all console output and send it back
-// for replay on client machine
-
 const vm = new NodeVM({
-  console: 'inherit',
+  console: 'redirect',
   sandbox: {},
   require: {
     external: true,
@@ -40,7 +36,20 @@ const vm = new NodeVM({
       }
     }
   }
-});
+})
+
+let consoleOutput = []
+let methods = ['log', 'info', 'warn', 'error', 'dir', 'trace']
+
+methods.forEach((method) => {
+  vm.on(`console.${method}`, (msg) => { consoleOutput.push([method, msg]) })
+})
+
+const getConsoleOutput = () => {
+  const output = consoleOutput
+  consoleOutput = []
+  return output
+}
 
 module.exports = async function runTest(test, solution, callback) {
   const id = path.basename(test.file)
@@ -69,6 +78,7 @@ module.exports = async function runTest(test, solution, callback) {
       description: t.description,
       points: t.points,
       status: 'passed',
+      consoleOutput: getConsoleOutput(),
     })
   } catch (e) {
     e.stack = stack.clean(e.stack)
@@ -76,6 +86,7 @@ module.exports = async function runTest(test, solution, callback) {
     callback(null, {
       id: id,
       status: 'failed',
+      consoleOutput: getConsoleOutput(),
       error: format(e, {
         colorFns: {
           diffAdded: chalk.green,
