@@ -47,10 +47,18 @@ const store = new Vuex.Store({
     },
   },
   getters: {
+    sortedProblems(state, getters) {
+      return [...state.problems].sort((a, b) => a.points - b.points).map((p) => {
+        return {
+          ...p,
+          solvers: getters.teams.filter(t => !!t.problems[p.id])
+        }
+      })
+    },
     sortedEvents(state) {
       const solves = {}
 
-      return state.events.sort((a, b) => a.time - b.time).map((e) => {
+      return [...state.events].sort((a, b) => a.time - b.time).map((e) => {
         const solveKey = `${e.team}-${e.problem}`
         const alreadySolved = !!solves[solveKey]
         solves[solveKey] = true

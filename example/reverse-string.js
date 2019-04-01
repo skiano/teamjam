@@ -1,5 +1,5 @@
 exports.title = 'Reverse String';
-exports.points = 100;
+exports.points = 200;
 exports.description = `
   Given a string such as "stressed", return "desserts"
 `;
