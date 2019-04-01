@@ -32,7 +32,8 @@ exports.runTest = async function(test, solution) {
 
 exports.runTestFromFile = async function(file) {
   const code = await readFile(file)
-  return exports.runTest({ code: code.toString(), file })
+  const test = { code: code.toString(), file }
+  return exports.runTest(test, test)
 }
 
 exports.shutdown = function() {

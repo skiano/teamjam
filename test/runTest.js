@@ -19,22 +19,20 @@ const stack = new StackUtils({
 // and run the player code in a tighter one
 // (also allow user to override the sandbox options)
 
-const vm = new NodeVM({
+const testVm = new NodeVM({
+  require: {
+    external: true,
+    builtin: ['*'],
+  },
+})
+
+const sandbox = new NodeVM({
   console: 'redirect',
   sandbox: {},
   require: {
-    external: true,
-    builtin: [
-      'fs',
-      'path',
-      'assert'
-    ],
-    root: "./",
-    mock: {
-      fs: {
-        readFileSync() { return 'Nice try!'; }
-      }
-    }
+    external: false,
+    builtin: [],
+    mock: {}
   }
 })
 
@@ -42,7 +40,7 @@ let consoleOutput = []
 let methods = ['log', 'info', 'warn', 'error', 'dir', 'trace']
 
 methods.forEach((method) => {
-  vm.on(`console.${method}`, (msg) => { consoleOutput.push([method, msg]) })
+  sandbox.on(`console.${method}`, (msg) => { consoleOutput.push([method, msg]) })
 })
 
 const getConsoleOutput = () => {
@@ -55,8 +53,8 @@ module.exports = async function runTest(test, solution, callback) {
   const id = path.basename(test.file)
 
   try {
-    const t = vm.run(test.code, test.file)
-    const s = solution && vm.run(solution.code, solution.file)
+    const t = testVm.run(test.code, test.file)
+    const s = solution && sandbox.run(solution.code, solution.file)
 
     assert.strictEqual(typeof t.points, 'number', `${id} must export points`)
     assert.strictEqual(typeof t.test, 'function', `${id} must export test`)
