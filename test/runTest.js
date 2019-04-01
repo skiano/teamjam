@@ -52,7 +52,7 @@ module.exports = async function runTest(test, solution, callback) {
 
   try {
     const t = testVm.run(test.code, test.file)
-    const s = solution && sandbox.run(solution.code, solution.file)
+    const s = sandbox.run(solution.code, solution.file)
 
     assert.strictEqual(typeof t.points, 'number', `${id} must export points`)
     assert.strictEqual(typeof t.test, 'function', `${id} must export test`)
@@ -64,7 +64,7 @@ module.exports = async function runTest(test, solution, callback) {
       assert.strictEqual(typeof s.solution, 'function', `${path.basename(solution.file)} must export solution`)
     }
 
-    await t.test(solution ? s.solution : t.solution)
+    await t.test(s.solution)
 
     callback(null, {
       id: id,
@@ -77,6 +77,7 @@ module.exports = async function runTest(test, solution, callback) {
       consoleOutput: getConsoleOutput(),
     })
   } catch (e) {
+    console.log(e.stack)
     e.stack = stack.clean(e.stack)
 
     callback(null, {
