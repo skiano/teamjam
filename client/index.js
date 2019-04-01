@@ -104,6 +104,12 @@ module.exports = async function createClient(options) {
     if (TESTS[file].result.status === 'failed') {
       console.log()
       console.log(chalk.red(`FAILURE: ${TESTS[file].id}\n`))
+      if (TESTS[file].result.consoleOutput.length > 0) {
+        TESTS[file].result.consoleOutput.forEach(([method, msg]) => {
+          console.log(chalk.cyan(msg))
+        })
+        console.log('')
+      }
       console.log(TESTS[file].result.error)
     }
 
