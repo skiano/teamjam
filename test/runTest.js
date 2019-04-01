@@ -77,7 +77,6 @@ module.exports = async function runTest(test, solution, callback) {
       consoleOutput: getConsoleOutput(),
     })
   } catch (e) {
-    console.log(e.stack)
     e.stack = stack.clean(e.stack)
 
     callback(null, {
