@@ -19,6 +19,7 @@ const help = () => {
     `$ teamjam --help`,
     `$ teamjam play --url="http://..." --team="MY TEAM"`,
     `$ teamjam serve --problems=directory/with/problems`,
+    `$ teamjam dev --problems=directory/with/problems`,
     '',
   ].join('\n'))
 }
@@ -30,6 +31,7 @@ const main = async () => {
     case !!argv.help: return help()
     case command === 'serve': return require('../server')(argv)
     case command === 'play': return require('../client')(argv)
+    case command === 'dev': return require('../test/devTests')(argv)
     default: throw new Error('Invalid command')
   }
 }
