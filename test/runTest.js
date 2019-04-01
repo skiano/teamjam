@@ -14,17 +14,15 @@ const stack = new StackUtils({
   ]),
 });
 
-// TODO:
-// run the tester code in a permissive sandbox
-// and run the player code in a tighter one
-// (also allow user to override the sandbox options)
-
 const testVm = new NodeVM({
   require: {
     external: true,
     builtin: ['*'],
   },
 })
+
+// TODO: allow user to override NodeVM options
+// so they could create tests that allow access to node modules
 
 const sandbox = new NodeVM({
   console: 'redirect',
