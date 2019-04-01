@@ -4,6 +4,7 @@ const path = require('path')
 const uuid = require('uuid/v4')
 const chalk = require('chalk')
 const ngrok = require('ngrok')
+const prism = require('prismjs')
 const express = require('express')
 const bodyParser = require('body-parser')
 const EventEmitter = require('eventemitter3')
@@ -82,7 +83,11 @@ function createApp(problemSet) {
           problem: problem.id,
           points: problem.points,
           team: req.body.team,
-          solution: req.body.test.code,
+          solution: prism.highlight(
+            req.body.test.code.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, ''),
+            prism.languages.javascript,
+            'javascript'
+          ),
         })
         console.log(`> ${chalk.green('passed')} [${req.body.id}] ${req.body.team}`)
       } else {
