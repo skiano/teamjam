@@ -8,6 +8,7 @@ const chokidar = require('chokidar')
 const fileAccess = util.promisify(fs.access)
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
+const getSignature = require("./getSignature");
 
 module.exports = async function createClient(options) {
   if (!options.url) {
@@ -44,7 +45,7 @@ module.exports = async function createClient(options) {
       ${p.description.trim()}
       */
 
-      exports.solution = () => {
+      exports.solution = ${getSignature(p.code)} => {
         // your solution here...
       }
     `)
