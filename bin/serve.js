@@ -7,8 +7,8 @@ const ngrok = require('ngrok')
 const express = require('express')
 const bodyParser = require('body-parser')
 const EventEmitter = require('events')
-const getTests = require('../test/getTests')
-const { runTest } = require('../test')
+const getTests = require('../lib/getProblemSet')
+const { runTest } = require('../lib/problemFarm')
 
 function createApp(problemSet) {
   const app = express()
@@ -107,7 +107,7 @@ function createApp(problemSet) {
   /* SERVE CLIENT APP */
   /********************/
 
-  app.get('/*', express.static(path.resolve(__dirname, '..', 'public')))
+  app.get('/*', express.static(path.resolve(__dirname, '..', 'ui')))
 
   return app
 }

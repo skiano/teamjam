@@ -1,7 +1,7 @@
 const path = require('path')
 const chalk = require('chalk')
 const chokidar = require('chokidar')
-const { runTestFromFile } = require('./index')
+const { runTestFromFile } = require('../lib/problemFarm')
 
 module.exports = async function getTests({ problems }) {
   const dir = path.resolve(process.cwd(), problems)

@@ -35,9 +35,9 @@ const main = async () => {
 
   switch (true) {
     case !!argv.help: return help()
-    case command === 'serve': return require('../server')(argv)
-    case command === 'play': return require('../client')(argv)
-    case command === 'dev': return require('../test/devTests')(argv)
+    case command === 'serve': return require('./serve')(argv)
+    case command === 'play': return require('./play')(argv)
+    case command === 'dev': return require('./dev')(argv)
     default: throw new Error('Invalid command')
   }
 }
