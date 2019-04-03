@@ -6,7 +6,7 @@ const chalk = require('chalk')
 const ngrok = require('ngrok')
 const express = require('express')
 const bodyParser = require('body-parser')
-const EventEmitter = require('eventemitter3')
+const EventEmitter = require('events')
 const getTests = require('../test/getTests')
 const { runTest } = require('../test')
 
