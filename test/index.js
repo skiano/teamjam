@@ -26,6 +26,7 @@ exports.runTest = async function(test, solution) {
       id: path.basename(test.file),
       status: 'failed',
       error: e.stack,
+      consoleOutput: [],
     }
   }
 }

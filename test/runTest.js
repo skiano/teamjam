@@ -38,7 +38,7 @@ let consoleOutput = []
 let methods = ['log', 'info', 'warn', 'error', 'dir', 'trace']
 
 methods.forEach((method) => {
-  sandbox.on(`console.${method}`, (msg) => { consoleOutput.push([method, msg]) })
+  sandbox.on(`console.${method}`, function () { consoleOutput.push([method, Array.from(arguments)]) })
 })
 
 const getConsoleOutput = () => {
