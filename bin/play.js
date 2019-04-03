@@ -71,7 +71,7 @@ module.exports = async function play(options) {
   const watchFiles = Object.keys(TESTS)
   const watcher = chokidar.watch(watchFiles)
 
-  console.log(`> watching problems in: ${chalk.yellow(path.relative(process.cwd(), options.root))}`)
+  console.log(`> watching problems in: ${chalk.yellow(path.resolve(process.cwd(), options.root))}`)
 
   const submitFile = async (file) => {
     const id = path.basename(file)
