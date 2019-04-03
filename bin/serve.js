@@ -7,8 +7,8 @@ const ngrok = require('ngrok')
 const express = require('express')
 const bodyParser = require('body-parser')
 const EventEmitter = require('events')
-const getTests = require('../test/getTests')
-const { runTest } = require('../test')
+const getTests = require('../lib/getProblemSet')
+const { runProblem } = require('../lib/problemFarm')
 
 function createApp(problemSet) {
   const app = express()
@@ -19,7 +19,7 @@ function createApp(problemSet) {
 
   const EE = new EventEmitter()
   const EVENTS = []
-  EE.on('solve', (e) => EVENTS.push(e))
+  EE.on('event', (e) => EVENTS.push(e))
 
   /*****************************************/
   /* SEND COMPLETE EVENT RECORD TO CLIENTS */
@@ -54,12 +54,12 @@ function createApp(problemSet) {
     setInterval(sendMessage, 60000, res, "ping", "still waiting");
 
     // subscribe for updates
-    const handleSolve = (data) => sendMessage(res, 'solve', JSON.stringify(data))
-    EE.on('solve', handleSolve)
+    const handleSolve = (data) => sendMessage(res, 'event', JSON.stringify(data))
+    EE.on('event', handleSolve)
 
     // Cleanup subscription when user disconnects
     res.on('close', () => {
-      EE.removeListener('solve', handleSolve)
+      EE.removeListener('event', handleSolve)
     });
   })
 
@@ -73,10 +73,10 @@ function createApp(problemSet) {
 
       if (!problem) throw new Error(`could not find problem: '${req.body.id}'`)
 
-      const result = await runTest({ file: problem.id, code: problem.code }, req.body.test)
+      const result = await runProblem({ file: problem.id, code: problem.code }, req.body.test)
 
       if (result.status === 'passed') {
-        EE.emit('solve', {
+        EE.emit('event', {
           id: uuid(),
           time: Date.now(),
           problem: problem.id,
@@ -107,12 +107,12 @@ function createApp(problemSet) {
   /* SERVE CLIENT APP */
   /********************/
 
-  app.get('/*', express.static(path.resolve(__dirname, '..', 'public')))
+  app.get('/*', express.static(path.resolve(__dirname, '..', 'ui')))
 
   return app
 }
 
-module.exports = async function createServer(options) {
+module.exports = async function serve(options) {
   if (!options.problems) {
     throw new Error('--problems is required')
   }
