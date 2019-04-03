@@ -11,7 +11,7 @@
     "challenge"
   ],
   "bin": {
-    "teamjam": "bin/teamjam.js"
+    "teamjam": "bin/index.js"
   },
   "scripts": {},
   "dependencies": {
