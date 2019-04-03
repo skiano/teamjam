@@ -10,7 +10,7 @@ const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 const getSignature = require("../lib/getSignature")
 
-module.exports = async function createClient(options) {
+module.exports = async function play(options) {
   if (!options.url) {
     throw new Error('--url is required')
   }

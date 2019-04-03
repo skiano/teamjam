@@ -8,7 +8,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const EventEmitter = require('events')
 const getTests = require('../lib/getProblemSet')
-const { runTest } = require('../lib/problemFarm')
+const { runProblem } = require('../lib/problemFarm')
 
 function createApp(problemSet) {
   const app = express()
@@ -73,7 +73,7 @@ function createApp(problemSet) {
 
       if (!problem) throw new Error(`could not find problem: '${req.body.id}'`)
 
-      const result = await runTest({ file: problem.id, code: problem.code }, req.body.test)
+      const result = await runProblem({ file: problem.id, code: problem.code }, req.body.test)
 
       if (result.status === 'passed') {
         EE.emit('event', {
@@ -112,7 +112,7 @@ function createApp(problemSet) {
   return app
 }
 
-module.exports = async function createServer(options) {
+module.exports = async function serve(options) {
   if (!options.problems) {
     throw new Error('--problems is required')
   }
