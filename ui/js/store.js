@@ -29,7 +29,7 @@ const store = new Vuex.Store({
     async subscribeToEvents(context) {
       serverEvents = new EventSource('/notification');
 
-      serverEvents.addEventListener('solve', function(e) {
+      serverEvents.addEventListener('event', function(e) {
         context.commit('addEvents', [JSON.parse(e.data)])
       });
 
