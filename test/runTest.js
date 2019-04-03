@@ -68,12 +68,12 @@ module.exports = async function runTest(test, solution, callback) {
 
     callback(null, {
       id: id,
+      status: 'passed',
       file: test.file,
       code: test.code,
       title: t.title,
       description: t.description,
       points: t.points,
-      status: 'passed',
       consoleOutput: getConsoleOutput(),
     })
   } catch (e) {
