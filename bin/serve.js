@@ -21,14 +21,21 @@ function createApp(PROBLEMS) {
 
   const EE = new EventEmitter()
   const EVENTS = []
-  const emitEvent = (eventType, eventData) => {
-    EE.emit('event', Object.assign({ type: eventType, time: Date.now() }, eventData))
-  }
 
   EE.on('event', (e) => {
     console.log(`> event: ${e.team} - ${e.type} - ${e.problemId}`)
     EVENTS.push(e)
   })
+
+  const emitEvent = (eventType, eventData) => {
+    EE.emit('event', Object.assign({ type: eventType, time: Date.now() }, eventData))
+  }
+
+  let thread = 0
+  const createEventThread = () => {
+    const threadId = thread++
+    return (t, d) => emitEvent(t, Object.assign({ thread: threadId }, d))
+  }
 
   /*****************************************/
   /* SEND COMPLETE EVENT RECORD TO CLIENTS */
@@ -91,8 +98,10 @@ function createApp(PROBLEMS) {
       solution,
     } = req.body
 
+    const emitThreadedEvent = createEventThread()
+
     try {
-      emitEvent('submit', { team, problemId })
+      emitThreadedEvent('submit', { team, problemId })
 
       const problem = PROBLEMS.problems.find(p => p.id === problemId)
 
@@ -103,9 +112,9 @@ function createApp(PROBLEMS) {
 
       if (status === 'passed') {
         const code = solution.code.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
-        emitEvent('solve', { team, problemId, code })
+        emitThreadedEvent('solve', { team, problemId, code })
       } else {
-        emitEvent('fail', {
+        emitThreadedEvent('fail', {
           team,
           problemId,
           error: convert.toHtml(error),
@@ -115,7 +124,7 @@ function createApp(PROBLEMS) {
 
       res.json(result)
     } catch (error) {
-      emitEvent('error', { team, problemId, error })
+      emitThreadedEvent('error', { team, problemId, error })
       next(error)
     }
   })
