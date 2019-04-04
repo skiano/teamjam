@@ -1,16 +1,18 @@
 const fs = require('fs')
 const util = require('util')
 const path = require('path')
-const uuid = require('uuid/v4')
 const chalk = require('chalk')
 const ngrok = require('ngrok')
 const express = require('express')
 const bodyParser = require('body-parser')
+const Convert = require('ansi-to-html')
 const EventEmitter = require('events')
 const getTests = require('../lib/getProblemSet')
 const { runProblem } = require('../lib/problemFarm')
 
-function createApp(problemSet) {
+const convert = new Convert()
+
+function createApp(PROBLEMS) {
   const app = express()
 
   /*********************/
@@ -19,7 +21,14 @@ function createApp(problemSet) {
 
   const EE = new EventEmitter()
   const EVENTS = []
-  EE.on('event', (e) => EVENTS.push(e))
+  const emitEvent = (eventType, eventData) => {
+    EE.emit('event', Object.assign({ type: eventType, time: Date.now() }, eventData))
+  }
+
+  EE.on('event', (e) => {
+    console.log(`> event: ${e.team} - ${e.type} - ${e.problemId}`)
+    EVENTS.push(e)
+  })
 
   /*****************************************/
   /* SEND COMPLETE EVENT RECORD TO CLIENTS */
@@ -29,9 +38,17 @@ function createApp(problemSet) {
     res.json(EVENTS)
   })
 
-  /***************************/
-  /* SEND UPDATES TO CLIENTS */
-  /***************************/
+  /********************************/
+  /* EXPOSE PROBLEMS FOR DOWNLOAD */
+  /********************************/
+
+  app.get('/problems', (req, res) => {
+    res.json(PROBLEMS)
+  })
+
+  /****************************/
+  /* STREAM EVENTS TO CLIENTS */
+  /****************************/
 
   const sendMessage = (res, channel, data) => {
     res.write(`event: ${channel}\nid: 0\ndata: ${data}\n`);
@@ -68,39 +85,39 @@ function createApp(problemSet) {
   /********************/
 
   app.post('/submit', bodyParser.json(), async (req, res, next) => {
+    const {
+      team,
+      problemId,
+      solution,
+    } = req.body
+
     try {
-      const problem = problemSet.problems.find(p => p.id === req.body.id)
+      emitEvent('submit', { team, problemId })
 
-      if (!problem) throw new Error(`could not find problem: '${req.body.id}'`)
+      const problem = PROBLEMS.problems.find(p => p.id === problemId)
 
-      const result = await runProblem({ file: problem.id, code: problem.code }, req.body.test)
+      if (!problem) throw new Error(`Sorry, the problem ‘${problemId}’ does not exist`)
 
-      if (result.status === 'passed') {
-        EE.emit('event', {
-          id: uuid(),
-          time: Date.now(),
-          problem: problem.id,
-          points: problem.points,
-          team: req.body.team,
-          solution: req.body.test.code.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, ''),
-        })
-        console.log(`> ${chalk.green('passed')} [${req.body.id}] ${req.body.team}`)
+      const result = await runProblem(problem, solution)
+      const { status, error, consoleOutput } = result
+
+      if (status === 'passed') {
+        const code = solution.code.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
+        emitEvent('solve', { team, problemId, code })
       } else {
-        console.log(`> ${chalk.red('failed')} [${req.body.id}] ${req.body.team}`)
+        emitEvent('fail', {
+          team,
+          problemId,
+          error: convert.toHtml(error),
+          consoleOutput,
+        })
       }
 
       res.json(result)
-    } catch (err) {
-      next(err)
+    } catch (error) {
+      emitEvent('error', { team, problemId, error })
+      next(error)
     }
-  })
-
-  /********************************/
-  /* EXPOSE PROBLEMS FOR DOWNLOAD */
-  /********************************/
-
-  app.get('/problems', (req, res) => {
-    res.json(problemSet)
   })
 
   /********************/
@@ -134,7 +151,7 @@ module.exports = async function serve(options) {
     })
   })
 
-  const url = await ngrok.connect(PORT);
+  const url = await ngrok.connect(PORT)
 
   console.log(`> public at: ${url}`)
 }

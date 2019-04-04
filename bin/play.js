@@ -87,9 +87,9 @@ module.exports = async function play(options) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: id,
         team: options.team,
-        test: {
+        problemId: id,
+        solution: {
           code: code,
           file: file,
         },
@@ -103,14 +103,11 @@ module.exports = async function play(options) {
     TESTS[file].result = await res.json()
 
     if (TESTS[file].result.status === 'failed') {
-      console.log()
-      console.log(chalk.red(`FAILURE: ${TESTS[file].id}\n`))
-      if (TESTS[file].result.consoleOutput.length > 0) {
-        TESTS[file].result.consoleOutput.forEach(([method, args]) => {
-          console.log.apply(this, args)
-        })
-        console.log('')
+      if (TESTS[file].result.consoleOutput) {
+        console.log()
+        console.log(TESTS[file].result.consoleOutput)
       }
+      console.log()
       console.log(TESTS[file].result.error)
     }
 
