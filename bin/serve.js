@@ -19,6 +19,7 @@ function createApp(PROBLEMS) {
   /* CREATE STATE MGMT */
   /*********************/
 
+  const HAS_SOLVED = {}
   const EE = new EventEmitter()
   const EVENTS = []
 
@@ -111,8 +112,18 @@ function createApp(PROBLEMS) {
       const { status, error, consoleOutput } = result
 
       if (status === 'passed') {
+        const solveKey = [team, problemId].join('-')
         const code = solution.code.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
-        emitThreadedEvent('solve', { team, problemId, code })
+        const firstSolve = !HAS_SOLVED[solveKey]
+
+        emitThreadedEvent('solve', {
+          team,
+          problemId,
+          code,
+          firstSolve,
+        })
+
+        HAS_SOLVED[solveKey] = firstSolve
       } else {
         emitThreadedEvent('fail', {
           team,

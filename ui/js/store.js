@@ -13,7 +13,7 @@ const store = new Vuex.Store({
   mutations: {
     addEvents(state, payload) {
       payload.forEach((evt) => {
-        const alreadyDigested = state.events.some(e => e.id === evt.id)
+        const alreadyDigested = state.events.some(e => e.time === evt.time)
         if (!alreadyDigested) {
           state.events.push(evt)
         }
@@ -58,14 +58,16 @@ const store = new Vuex.Store({
     sortedEvents(state) {
       const solves = {}
 
-      return [...state.events].sort((a, b) => a.time - b.time).map((e) => {
+      return state.events.filter(e => e.type === 'solve').sort((a, b) => a.time - b.time).map((e) => {
         const solveKey = `${e.team}-${e.problem}`
         const alreadySolved = !!solves[solveKey]
         solves[solveKey] = true
 
+        console.log(e)
+
         return {
           ...e,
-          problem: state.problems.find(p => p.id === e.problem),
+          problem: state.problems.find(p => p.id === e.problemId),
           alreadySolved
         }
       })
@@ -76,7 +78,7 @@ const store = new Vuex.Store({
     teams(state, getters) {
       const teamMap = getters.sortedEvents.reduce((teams, evt) => {
         const { team, problem, solution, points, alreadySolved } = evt
-        const { id, title, description } = evt.problem
+        const { problemId, title, description } = evt.problem
 
         if (!teams[team]) {
           teams[team] = { name: team, problems: {}, score: 0 }
@@ -84,15 +86,17 @@ const store = new Vuex.Store({
 
         if (!evt.alreadySolved) {
           teams[team].score = teams[team].score + points
-          teams[team].problems[id] = {
-            id: id,
+          teams[team].problems[problemId] = {
+            id: problemId,
             title: title,
             description: description,
             solutions: [],
           }
         }
 
-        teams[team].problems[id].solutions.unshift(solution)
+        console.log(evt, solution)
+
+        teams[team].problems[problemId].solutions.unshift(solution)
 
         return teams
       }, {})
