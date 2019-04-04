@@ -129,7 +129,7 @@ function createApp(PROBLEMS) {
           team,
           problemId,
           code: solution.code,
-          error: convert.toHtml(error),
+          error: convert.toHtml(error).trim(),
           consoleOutput,
         })
       }

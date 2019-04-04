@@ -14,9 +14,13 @@ export default {
           <span v-if="event.points && event.points > 0">+{{event.problem.points}} points</span>
         </h3>
         <p class="event__message">
-          <teamjam-snippet v-if="event.code" :code="event.code" :title="event.problem.title" />
-          <teamjam-console v-if="event.consoleOutput" :stdout="event.consoleOutput" />
-          <teamjam-console v-if="event.error" :stdout="event.error" />
+          <teamjam-snippet
+            v-if="event.code"
+            :title="event.problem.title"
+            :code="event.code"
+            :error="event.error"
+            :consoleOutput="event.consoleOutput"
+          />
         </p>
       </li>
     </ul>
