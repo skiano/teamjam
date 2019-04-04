@@ -5,16 +5,16 @@ store.dispatch('fetchEvents')
 store.dispatch('fetchProblems')
 
 const routes = [
-  {
-    path: '/',
-    name: 'Problems',
-    component: () => import('./Problems.js')
-  },
-  {
-    path: '/teams',
-    name: 'Teams',
-    component: () => import('./Teams.js')
-  },
+  // {
+  //   path: '/',
+  //   name: 'Problems',
+  //   component: () => import('./Problems.js')
+  // },
+  // {
+  //   path: '/teams',
+  //   name: 'Teams',
+  //   component: () => import('./Teams.js')
+  // },
   {
     path: '/timeline',
     name: 'Timeline',
@@ -50,6 +50,6 @@ new Vue({
   computed: {
     currentRoute () {
       return this.$route.path
-    }
+    },
   },
 })

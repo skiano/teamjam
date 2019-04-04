@@ -1,18 +1,27 @@
+import components from './components.js'
+
 export default {
   name: 'timeline',
+  components: components,
   template: `
     <ul class="timeline">
-      <li class="event" v-for="event in reversedEvents" :key="event.id">
+      <li class="event" v-for="event in eventsReversed" :key="event.id">
+        <time class="event__timestamp">{{new Date(event.time).toLocaleString()}}</time>
+        <h3 class="event__heading">
+          <strong class="event__team">{{event.team}}</strong>
+          <em class="event__type">{{event.type}}</em>
+          <span class="event__title">{{event.problem.title}}</span>
+          <span v-if="event.points && event.points > 0">+{{event.problem.points}} points</span>
+        </h3>
         <p class="event__message">
-          <span class="event__timestamp">{{new Date(event.time).toLocaleString()}}</span>
-          {{event.team}} solved "{{event.problem.title}}"
-          <span v-if="!event.alreadySolved">+{{event.problem.points}} points</span>
-          <span v-if="event.alreadySolved">resolved</span>
+          <teamjam-snippet v-if="event.code" :code="event.code" />
+          <teamjam-console v-if="event.consoleOutput" :stdout="event.consoleOutput" />
+          <teamjam-console v-if="event.error" :stdout="event.error" />
         </p>
       </li>
     </ul>
   `,
   computed: {
-    ...Vuex.mapGetters(['reversedEvents'])
+    ...Vuex.mapGetters(['eventsReversed'])
   }
 }

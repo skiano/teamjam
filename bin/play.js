@@ -75,7 +75,7 @@ module.exports = async function play(options) {
         team: options.team,
         problemId: id,
         solution: {
-          code: code,
+          code: code.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '').trim(),
           file: file,
         },
       }),

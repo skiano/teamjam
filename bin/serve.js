@@ -109,18 +109,18 @@ function createApp(PROBLEMS) {
       if (!problem) throw new Error(`Sorry, the problem ‘${problemId}’ does not exist`)
 
       const result = await runProblem(problem, solution)
-      const { status, error, consoleOutput } = result
+      const { status, error, consoleOutput, points } = result
 
       if (status === 'passed') {
         const solveKey = [team, problemId].join('-')
-        const code = solution.code.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '')
         const firstSolve = !HAS_SOLVED[solveKey]
 
         emitThreadedEvent('solve', {
           team,
           problemId,
-          code,
           firstSolve,
+          code: solution.code,
+          points: firstSolve ? points : 0
         })
 
         HAS_SOLVED[solveKey] = firstSolve
@@ -128,6 +128,7 @@ function createApp(PROBLEMS) {
         emitThreadedEvent('fail', {
           team,
           problemId,
+          code: solution.code,
           error: convert.toHtml(error),
           consoleOutput,
         })
