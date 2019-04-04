@@ -5,11 +5,11 @@ store.dispatch('fetchEvents')
 store.dispatch('fetchProblems')
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Problems',
-  //   component: () => import('./Problems.js')
-  // },
+  {
+    path: '/',
+    name: 'Problems',
+    component: () => import('./Problems.js')
+  },
   // {
   //   path: '/teams',
   //   name: 'Teams',

@@ -1,9 +1,12 @@
 const components = {}
 
 components['teamjam-snippet'] = {
-  props: ['code'],
+  props: ['code', 'title'],
   template: `
-    <pre class="solution__code"><code class="language-javascript" v-html="highlighted"></code></pre>
+    <div class="snippet">
+      <h4 v-if="title" class="snippet__title">{{title}}</h4>
+      <pre class="snippet__code"><code class="language-javascript" v-html="highlighted"></code></pre>
+    </div>
   `,
   computed: {
     highlighted() {

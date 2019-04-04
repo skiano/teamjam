@@ -54,26 +54,34 @@ html {
   margin-bottom: 8px;
 }
 
-.solution {
+/* .snippet {
   margin: 20px 20px;
   border-left: 1px solid #ccc;
   padding-left: 15px;
-}
+} */
 
-.solution__title {
+/* .solution__title {
   margin-bottom: 15px;
+}*/
+
+.snippet {
+  margin-bottom: 15px;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.solution__code {
+.snippet__title {
+  font-weight: bold;
+  background: #eefecc;
+  padding: 12px 15px;
+}
+
+.snippet__code {
   font-family: monospace;
   padding: 15px;
   color: #333;
   background: #f6f6f6;
-  border-radius: 8px;
-}
-
-.solution__code + .solution__code {
-  margin-top: 15px;
+  overflow: auto;
 }
 
 /*******************/
@@ -134,14 +142,13 @@ html {
 }
 
 .event__heading {
-  font-weight: bold;
   margin-bottom: 15px;
 }
 
 /* CONSOLE */
 .console {
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  background: #eeffcc;
+  background: #ffeefe;
   border-radius: 8px;
   padding: 20px;
   overflow: auto;
