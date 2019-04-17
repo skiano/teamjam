@@ -10,11 +10,11 @@ const routes = [
     name: 'Problems',
     component: () => import('./Problems.js')
   },
-  {
-    path: '/teams',
-    name: 'Teams',
-    component: () => import('./Teams.js')
-  },
+  // {
+  //   path: '/teams',
+  //   name: 'Teams',
+  //   component: () => import('./Teams.js')
+  // },
   {
     path: '/timeline',
     name: 'Timeline',
@@ -50,6 +50,6 @@ new Vue({
   computed: {
     currentRoute () {
       return this.$route.path
-    }
+    },
   },
 })

@@ -13,7 +13,7 @@ const store = new Vuex.Store({
   mutations: {
     addEvents(state, payload) {
       payload.forEach((evt) => {
-        const alreadyDigested = state.events.some(e => e.id === evt.id)
+        const alreadyDigested = state.events.some(e => e.time === evt.time)
         if (!alreadyDigested) {
           state.events.push(evt)
         }
@@ -47,64 +47,52 @@ const store = new Vuex.Store({
     },
   },
   getters: {
-    sortedProblems(state, getters) {
-      return [...state.problems].sort((a, b) => a.points - b.points).map((p) => {
-        return {
-          ...p,
-          solvers: getters.teams.filter(t => !!t.problems[p.id])
-        }
-      })
+    events(state, getters) {
+      return state.events
+        .map((event) => {
+          return {
+            ...event,
+            problem: state.problems.find(p => p.id === event.problemId)
+          }
+        })
+        .sort((a, b) => a.time - b.time)
     },
-    sortedEvents(state) {
-      const solves = {}
-
-      return [...state.events].sort((a, b) => a.time - b.time).map((e) => {
-        const solveKey = `${e.team}-${e.problem}`
-        const alreadySolved = !!solves[solveKey]
-        solves[solveKey] = true
-
-        return {
-          ...e,
-          problem: state.problems.find(p => p.id === e.problem),
-          alreadySolved
-        }
-      })
-    },
-    reversedEvents(state, getters) {
-      return [...getters.sortedEvents].reverse()
+    eventsReversed(state, getters) {
+      return [...getters.events].reverse()
     },
     teams(state, getters) {
-      const teamMap = getters.sortedEvents.reduce((teams, evt) => {
-        const { team, problem, solution, points, alreadySolved } = evt
-        const { id, title, description } = evt.problem
+      const teams = {}
 
-        if (!teams[team]) {
-          teams[team] = { name: team, problems: {}, score: 0 }
-        }
-
-        if (!evt.alreadySolved) {
-          teams[team].score = teams[team].score + points
-          teams[team].problems[id] = {
-            id: id,
-            title: title,
-            description: description,
-            solutions: [],
+      getters.events.forEach((event) => {
+        if (!teams[event.team]) {
+          teams[event.team] = {
+            team: event.team,
+            score: 0,
+            solutions: {},
           }
         }
 
-        teams[team].problems[id].solutions.unshift(solution)
+        if (event.firstSolve) {
+          teams[event.team].solutions[event.problemId] = []
+          teams[event.team].score += event.points
+        }
 
-        return teams
-      }, {})
+        if (event.type === 'solve') {
+          teams[event.team].solutions[event.problemId].unshift(event.code)
+        }
+      })
 
-      return Object.values(teamMap).sort((a, b) => b.name < a.name ? 1 : -1)
-    }
-  }
+      return Object.values(teams).sort((a, b) => a.team > b.team ? 1 : -1)
+    },
+    problems(state, getters) {
+      console.log(state.problems)
+      return state.problems
+        .map((problem) => ({
+          ...problem,
+          solvers: getters.teams.filter(t => !!t.solutions[problem.id])
+        }))
+    },
+  },
 })
-
-// store.subscribe((mutation, state) => {
-//   console.log('PROBLEMS', state.problems)
-//   console.log('TEAMS', store.getters.teams)
-// })
 
 export default store

@@ -3,12 +3,10 @@ const util = require('util')
 const path = require('path')
 const chalk = require('chalk')
 const fetch = require('node-fetch')
-const dedent = require('dedent')
 const chokidar = require('chokidar')
 const fileAccess = util.promisify(fs.access)
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
-const getSignature = require("../lib/getSignature")
 
 module.exports = async function play(options) {
   if (!options.url) {
@@ -36,31 +34,18 @@ module.exports = async function play(options) {
   await Promise.all(problems.map(async (p) => {
     // create code for player to download
     const file = path.resolve(options.root, p.id)
-    const header = `${p.title.trim()} - points: ${p.points}`
-    const code = dedent(`
-      /*
-      ${'-'.repeat(header.length)}
-      ${header}
-      ${'-'.repeat(header.length)}
-      ${p.description.trim()}
-      */
-
-      exports.solution = ${getSignature(p.code)} => {
-        // your solution here...
-      }
-    `)
 
     // do not overwrite their existing solution
     try {
       await fileAccess(file)
     } catch (_) {
-      await writeFile(file, code)
+      await writeFile(file, p.stub)
     }
 
     // store an initial state of the problem
     TESTS[file] = {
       id: p.id,
-      code: code,
+      code: p.stub,
     }
   }))
 
@@ -87,10 +72,10 @@ module.exports = async function play(options) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: id,
         team: options.team,
-        test: {
-          code: code,
+        problemId: id,
+        solution: {
+          code: code.replace(/(\/\*)[\s\S]*(\*\/)\s*/m, '').trim(),
           file: file,
         },
       }),
@@ -103,14 +88,11 @@ module.exports = async function play(options) {
     TESTS[file].result = await res.json()
 
     if (TESTS[file].result.status === 'failed') {
-      console.log()
-      console.log(chalk.red(`FAILURE: ${TESTS[file].id}\n`))
-      if (TESTS[file].result.consoleOutput.length > 0) {
-        TESTS[file].result.consoleOutput.forEach(([method, args]) => {
-          console.log.apply(this, args)
-        })
-        console.log('')
+      if (TESTS[file].result.consoleOutput) {
+        console.log()
+        console.log(TESTS[file].result.consoleOutput)
       }
+      console.log()
       console.log(TESTS[file].result.error)
     }
 

@@ -17,6 +17,7 @@
   "dependencies": {
     "@babel/parser": "^7.4.2",
     "@babel/traverse": "^7.4.0",
+    "ansi-to-html": "^0.6.10",
     "assertion-error-formatter": "2.0.1",
     "body-parser": "1.18.3",
     "chalk": "2.4.2",
@@ -27,7 +28,6 @@
     "ngrok": "3.1.1",
     "node-fetch": "2.3.0",
     "stack-utils": "1.0.2",
-    "uuid": "3.3.2",
     "vm2": "3.6.10",
     "worker-farm": "1.6.0"
   }
