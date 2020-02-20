@@ -134,7 +134,7 @@ module.exports = async function serve(options) {
     })
   })
 
-  const url = await ngrok.connect(PORT);
+  // const url = await ngrok.connect(PORT);
 
-  console.log(`> public at: ${url}`)
+  // console.log(`> public at: ${url}`)
 }
